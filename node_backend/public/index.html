@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <script src = "./sockethandler.class.js"></script>
+    <script src = "./fetchJWT.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/hls.js/latest/hls.min.js"></script> -->
+    <!-- <script src="./videoPlayer.js"></script> -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    Radio Western Live Video Stream
+    <div id="video-box">
+        <video id = "video" src = 'http://147.182.148.189:8080/live/_hi/index.m3u8'></video>
+    </div>
+    
+    <div id = 'login-form'>
+        <input id = "username" type="text" placeholder="username">
+        <input id = "password" type="password" placeholder="password">
+        <button onclick="submitLogin(
+            document.getElementById('username').value,
+            document.getElementById('password').value,
+            )">Login</button>
+    </div>
+    
+    <div id = "message-display">DISPLAY CHAT HERE</div>
+    <div id = "chat-form">
+        <input id = 'message-box' type="text" placeholder="message">
+        <button onclick="socketHandler.sendMessage(
+            document.getElementById('message-box').value
+            )">SEND</button>
+    </div>
+
+</body>
+</html>

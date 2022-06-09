@@ -1,0 +1,11 @@
+node_backend/.env
+react_frontend/.env
+node_backend/node_modules/*
+react_frontend/node_modules/*
+.DS_Store
+node_backend/.DS_Store
+react_frontend/.DS_Store
+node_backend/public/.DS_Store
+node_backend/package-lock.json
+react_frontend/package-lock.json
+github.token

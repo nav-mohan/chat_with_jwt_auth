@@ -1,0 +1,31 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+body{
+    display: grid;
+}
+
+#video-box{
+    max-width: 100vw;
+}
+
+#video{
+    max-width: 100%;
+    border:5px solid black
+}
+
+#message-display{
+    background-color: rgba(245, 222, 179, 0.493);
+    width: 50vw;
+    max-height: 100vh;
+    overflow: scroll;
+}
+
+.user-message{
+    display: flex;
+    flex-direction: row;
+}
