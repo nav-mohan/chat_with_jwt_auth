@@ -8,15 +8,18 @@ const LoginButton = () => {
     const loginFunction = (e) => {
         e.preventDefault();
         console.log("Logging In")
-        const loginForm = new FormData();
-        loginForm.append('username','webadmin')
-        loginForm.append('password','w3b@dm1n_p@55w0rd')
+
+        var loginForm = {'username': 'webadmin'};
         fetch(`${NODE_BASEURL}/login`, {
             method: 'POST',
+            headers:{
+                "Content-Type":"application/json"
+            },
             body: loginForm
         })
-        .then((res)=>{
-            console.log(res.body)
+        .then((a)=>{
+            console.log((a.text()))
+            // console.log(JSON.parse(a.text()))
         });
     }
     return (
