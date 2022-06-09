@@ -13,6 +13,7 @@ const wordpressBaseUrl   = process.env.WORDPRESS_BASE_URL;
 const wordpressJwtPath   = process.env.WORDPRESS_JWT_PATH;
 const authySocketPath    = process.env.NODE_AUTHENTICATED_SOCKET_PATH;
 const nonAuthySocketPath = process.env.NODE_NON_AUTHENTICATED_SOCKET_PATH;
+const deployEnvironment = process.env.DEPLOY_ENVIRONMENT;
 
 if(!secretServerKey){
     throw new Error(".env is missing SECRET_SERVER_KEY");
@@ -74,6 +75,11 @@ if(!nonAuthySocketPath){
     nonAuthySocketPath = "/non-authy.io"
 }
 
+if(!deployEnvironment){
+    throw new Error(".env is missing DEPLOY_ENVIRONMENT. It should be either 'DEVELOPMENT' or 'PRODUCTION'" );
+    deployEnvironment = "DEVELOPMENT"
+}
+
 // An array of URLs that you want NodeJS to allow CORS
 const clientOrigins = ["http://localhost:4040"];
 
@@ -90,5 +96,6 @@ module.exports = {
     wordpressJwtPath,
     authySocketPath,
     nonAuthySocketPath,
+    deployEnvironment,
     clientOrigins
   };
