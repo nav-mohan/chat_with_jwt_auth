@@ -27,40 +27,47 @@ mysql> exit;
 ### 2) Activating JSON WebTokens for your Wordpress site
 First check if your Wordpress site has the Wordpress REST API enabled. It should be by default. 
 Now, install any plugin that activates JSON webtokens for your site. Visit ```https://{your-site-name.com}/wp-json``` to check and make sure that the REST API is enabled. 
-After installing the plugin of choice, the plugin will expose a new endpoint on your Wordpress site usually looking something like this ```https://{your-site-name.com}/wp-json/jwt-auth/v1/token ```. For this repository, I've installed <a href = "https://en.wordpress-plugins-list.com/jwt-authentication-for-wp-rest-api-enrique-chavez/"> this plugin by Enrique Chavez</a>.
+After installing the plugin of choice, the plugin will expose a new endpoint on your Wordpress site usually looking something like this [https://{your-site.com}/wp-json/simple-jwt-login/v1/auth]. For this repository, I've installed <a href = "https://simplejwtlogin.com"> this plugin</a>.
 
-Some plugins have a frontend UI which enable you to setup the SERVER-SECRET-KEY. For this plugin I had to edit the ```wp-config.php```. Add these two lines to the ```wp-config.php``` file right below the part where the Wordpress secret keys are defined. 
-```
-define('JWT_AUTH_SECRET_KEY', 'super-secret-super-long-phrase-that-is-used-to-sign-the-json-web-token');
-define('JWT_AUTH_CORS_ENABLE', true);
-```
-
-### 3) Get User Roles from JWT plugin (optional)
+### 3) Configuring the plugin
+This plugin has a frontend UI for config that is accessible on the WP admin dashboard. 
+Go to the ```General``` settings and type out your SECRET_SERVER_KEY. In this example I've used ```really-secret-key-here```. 
+Go to ```Auth codes``` settings and type out another key under the <b>Authentication Key</b> column such as ```this-is-another-secret-key-for-registering-new-users```. <i>This is not essential but it adds extra security</i>
+Now go to ```Authentication``` settings and enable user authentication. Make sure to check all boxes under JWT payload. Check the radio button for <b>Use Auth codes</b>
+Go to the ```Register User``` and enable user registration and check <b>Use Auth codes</b>
+Go to the <b>Hooks</b> settings and check the ```simple_jwt_login_response_auth_user``` option.  
 Open the functions.php file and add the following lines of code 
 ```
-add_filter('jwt_auth_token_before_dispatch', 'add_user_info_jwt', 10, 2);
-
-function add_user_info_jwt($token, $user) {
-    $token['roles'] = implode(',', $user->roles);;
-    return $token;
+function add_extra_dets_simple_jwt_login($payload,$user){
+	$payload['user_info'] = $user;//this will add the user's full details
+    return $payload;	
 }
+add_filter('simple_jwt_login_response_auth_user','add_extra_dets_simple_jwt_login',10, 2);
 ```
-Now the JWT payload will include the user's roles as well. 
-This could help with restricting access based on admin/author/subscriber.
+Now the JWT payload will return the user's info as well. This will help with restricting access based on whether the user's role is admin/contributor/subscriber. 
 
 
 ## Config: NodeJS Server
 
 Create a file called ```.env``` in the home folder of the Node.JS Project. Add these lines to it
 ```
-SECRET_SERVER_KEY='super-secret-super-long-phrase-that-is-used-to-sign-the-json-web-token'
-DB_USER='chatuser'
-DB_PWD='ch@tU53r_p@55w0rd'
-DB_NAME='chatdb'
+SECRET_SERVER_KEY='really-secret-key-here'
+DATABASE_ADDRESS='134.122.42.192'
+DATABASE_PORT='3306'
+DATABASE_USER='chatuser'
+DATABASE_PASSWORD='ch@tU53r_p@55w0rd'
+DATABASE_NAME='chatdb'
 TABLE_NAME='chattable'
-DB_PORT='3306'
-DB_IP='localhost'
-PORT='3000'
+NODE_SERVER_PORT='3000'
+SERVER_SSL_KEY='/path/to/ssl-key.pem'
+SERVER_SSL_CERT='/path/to/ssl-cert.pem'
+NODE_AUTHENTICATED_SOCKET_PATH='/authy.io/'
+NODE_NON_AUTHENTICATED_SOCKET_PATH='/non-authy.io/'
+WORDPRESS_BASE_URL='fm949.ca'
+WORDPRESS_JWT_LOGIN_PATH='/wp-json/simple-jwt-login/v1/auth'
+WORDPRESS_JWT_REGISTER_PATH='/wp-json/simple-jwt-login/v1/users'
+WORDPRESS_JWT_REGISTER_AUTH_KEY='this-is-another-secret-key-used-for-registering-new-users'
+DEPLOY_ENVIRONMENT='DEVELOPMENT'
 ```
 
 Install the client project dependencies:
@@ -90,9 +97,6 @@ Send the Login Form's submission to this address as a POST request.
 
 #### 3) validate and sanitize user input
 
-#### 4) enable user-registration by setting up SMPT server and enabling JWT to handle that.
-I'm trying out a different plugin for the sake of this feature. [https://simplejwtlogin.com/docs]
-
-#### 5) Use React Routers for switching between different quality version of stream. 
+#### 4) Use React Routers for switching between different quality version of stream. 
 
 ##### While setting up a whole server might seem overkill just for a chat, i could also setup a collaborative drawing pad and use the same authenticated/non-authenticated sockets for handling those events.
