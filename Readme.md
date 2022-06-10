@@ -74,6 +74,7 @@ Run the Node Server:
 ```bash
 node index.js
 ```
+
 ##### Hey could JWTs be used for making an authenticated streaming-service? Is that it?
 
 ### Config: Client-Side Javascript
@@ -81,11 +82,17 @@ Fetch the JWT from WordPress by submitting a ```http(s) POST``` request to
 ```https://{your-site-name.com}/wp-json/jwt-auth/v1/token``` 
 Send the Login Form's submission to this address as a POST request. 
 
-#### NEXT STEPS 
-##### 1) Get user's profile picture from here -- ```http://fm949.ca/wp-json/wp/v2/users```
-##### 2) Enable HTTPS
-##### 3) validate and sanitize user input
-##### 4) submit loginform to nodejs and let nodejs handle the connection to WP-JWT so user cannot modify username in jwtPayload
+### NEXT STEPS 
 
+#### 1) Get user's profile picture from here -- ```http://fm949.ca/wp-json/wp/v2/users```
 
-####While setting up a whole server might seem overkill just for a chat, i could also setup a collaborative drawing pad and use the same authenticated/non-authenticated sockets for handling those events.
+#### 2) Enable HTTPS
+
+#### 3) validate and sanitize user input
+
+#### 4) enable user-registration by setting up SMPT server and enabling JWT to handle that.
+I'm trying out a different plugin for the sake of this feature. [https://simplejwtlogin.com/docs]
+
+#### 5) Use React Routers for switching between different quality version of stream. 
+
+##### While setting up a whole server might seem overkill just for a chat, i could also setup a collaborative drawing pad and use the same authenticated/non-authenticated sockets for handling those events.

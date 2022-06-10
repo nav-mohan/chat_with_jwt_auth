@@ -38,12 +38,14 @@ nonAuthyIo.on('connect', (socket) => onNonAuthyConnect(socket))
 
 /**
  * ===============================================================
- * Login Route
+ * Login & Register Route
  * ===============================================================
  */
 
 const {loginRouter} = require('./login-router');
+const { registerRouter } = require('./register-router');
 app.use('/login', loginRouter)
+app.use('/register', registerRouter)
 
 /**
  * ===============================================================
