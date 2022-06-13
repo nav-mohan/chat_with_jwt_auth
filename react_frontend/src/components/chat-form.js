@@ -14,7 +14,7 @@ const ChatForm = ({userId}) => {
 
   const handleJoinChat = useCallback(() => {
     console.log("SENDING JOINR REQUEST")
-    socket.emit("SEND_REQUEST","HELLO WORLD");
+    socket.emit("joinRequest",localStorage.getItem('wordpressJWT'));
 }, []);
 
 useEffect(() => {

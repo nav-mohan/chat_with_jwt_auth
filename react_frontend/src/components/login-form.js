@@ -32,12 +32,17 @@ const LoginForm = () => {
         .then(async (res)=>{
             if(res.status == 200){
                 // Just becase it's 200 doesn't mean it's all good. the jwtPayload has a 'success':true property within
-                var resJson = await res.json();
-                console.log(resJson)
+                var resJson = res.json();
                 return resJson;
             }
             throw new Error(`login attempt res.status=${res.status}`)
 
+        })
+        .then((resJson)=>{
+            console.log(resJson)
+            if(resJson.jwt){
+                localStorage.setItem('wordpressJWT',resJson.jwt)
+            }
         })
         .catch((err) => {
             console.log("err",err);

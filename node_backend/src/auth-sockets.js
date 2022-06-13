@@ -49,9 +49,12 @@ const onAuthyConnect = (socket) => {
     })
     socket.on('sendMessage', (data) => {
         console.log(socket.user_display_name, " sent a message ", data.message, 'at time', data.created_at);
+        
+        // this is not good. nonAuthySockets array is defined in another file
         nonAuthySockets.forEach((sock) => {
             sock.emit('ReceiveMessage', { 'message': data.message, 'user_display_name': socket.user_display_name, 'created_at': data.created_at })
         });
+        
         log_chat = [[socket.id, socket.user_display_name, data.message]]
         mySqlConnection.query(INSERT_QUERY, [log_chat], (err, result) => {
             if (err) throw err;

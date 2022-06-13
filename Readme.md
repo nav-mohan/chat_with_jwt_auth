@@ -84,10 +84,22 @@ node index.js
 
 ##### Hey could JWTs be used for making an authenticated streaming-service? Is that it?
 
-### Config: Client-Side Javascript
-Fetch the JWT from WordPress by submitting a ```http(s) POST``` request to 
-```https://{your-site-name.com}/wp-json/jwt-auth/v1/token``` 
+### Config: Client-Side React
+Fetch the JWT from WordPress by submitting a ```http(s) POST``` request to ```${nodeBaseUrl}/login```. Node then forwards that Login Form to 
+```https://{your-site-name.com}/wp-json/simple-jwt-login/v1/```. 
+Node then receives the JWT Payload or an error message
+If  ```payload.status=success``` then Node checks for ```payload.user_info.roles``` and maintains a server-side key-value pair of ```{username:alice, token:payload.jwt, tokenExp:}```
 Send the Login Form's submission to this address as a POST request. 
+
+Once you receive the JWT, then emit a specific socket.emit('joinRequest',jwt) to the server. the 
+server authenticates the jwt and checks that it is (a) not expired (b) belongs to admin/contributor 
+user
+
+Use these three specific URLs for refreshing/validating/revoking JWT
+REFRESH - ```POST``` -  [https://fm949.ca/?rest_route=/simple-jwt-login/v1/auth/refresh&JWT=YOUR_JWT]
+VALIDATE - ```GET``` - [https://fm949.ca/?rest_route=/simple-jwt-login/v1/auth/validate&JWT=YOUR_JWT]
+REVOKE - ```POST``` - [https://fm949.ca/?rest_route=/simple-jwt-login/v1/auth/revoke&JWT=YOUR_JWT]
+
 
 ### NEXT STEPS 
 
@@ -107,3 +119,28 @@ Use React routers for swapping between <loginForm> <RegisterForm> and <ChatForm>
 
 #### Doubts
 Am i throwing errors correctly? What errors from Node should i actually send over to React? Is that even a concern?
+
+
+#### Fewer Sockets
+Rather than using two separate sockets all you have to do is
+    1) Initialize the non-authy socket connection with event listeners socket.send
+    2) the server-side non-authy socket has an event listener socket.on('sendJwt',jwt). 
+    3) client side non-authy socket has an event emitter socket.emit('sendJwt',jwt)
+    2) when user submits socket.emit('sendJwt',jwt) then you 
+    enable new event listeners on the Node side like socket.on('recvMesg',data)
+
+#### Local Stprage
+use vanilla javascript localStorage for storing jwts on React side
+    1) localStorage.setItem('wordpressJwt',jwt)
+    2) localStorage.setItem('wordpressJwtExp',1644847)
+    3) anytime using jwt, check if localStorage.getItem('wordpressJwtExp') is yet to pass
+
+
+
+#### READING
+About JWTs - [https://blog.angular-university.io/angular-jwt/]
+About Socket Rooms - [https://socket.io/docs/v3/rooms/]
+Using React Sockets - 
+[https://dev.to/bravemaster619/how-to-use-socket-io-client-correctly-in-react-app-o65]
+An example Video Chat App - [https://github.com/lethanhvietctt5/video-chat-app]
+
