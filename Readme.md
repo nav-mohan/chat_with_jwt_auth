@@ -100,3 +100,10 @@ Send the Login Form's submission to this address as a POST request.
 #### 4) Use React Routers for switching between different quality version of stream. 
 
 ##### While setting up a whole server might seem overkill just for a chat, i could also setup a collaborative drawing pad and use the same authenticated/non-authenticated sockets for handling those events.
+
+##### Toggling viz with React.Routers
+Use React routers for swapping between <loginForm> <RegisterForm> and <ChatForm>. Maintain stat ```isAuthenticated``` for toggling routes <ChatForm> and <loginForm> and then use button-triggered routers for swapping between <loginForm> and <RegisterForm>. They have their ```URLs``` precoded within. 
+
+
+#### Doubts
+Am i throwing errors correctly? What errors from Node should i actually send over to React? Is that even a concern?

@@ -1,0 +1,141 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2638
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fnil\fcharset0 Menlo-Bold;\f2\fnil\fcharset0 HelveticaNeue;
+}
+{\colortbl;\red255\green255\blue255;\red38\green255\blue255;\red194\green0\blue4;\red97\green109\blue4;
+\red0\green0\blue0;\red0\green0\blue0;\red252\green41\blue19;\red99\green92\blue2;\red61\green255\blue255;
+\red0\green0\blue0;\red255\green255\blue255;\red194\green0\blue4;\red255\green255\blue255;\red252\green9\blue7;
+\red252\green41\blue19;}
+{\*\expandedcolortbl;;\cssrgb\c8302\c100000\c100000;\cssrgb\c81490\c4389\c0;\cssrgb\c45311\c49290\c444;
+\csgray\c0;\cssrgb\c0\c1\c1;\cssrgb\c100000\c25745\c7993;\cssrgb\c46252\c43086\c0;\cssrgb\c25530\c100000\c100000;
+\cssrgb\c0\c0\c0;\cssrgb\c100000\c100000\c99985;\cssrgb\c81425\c4259\c0;\cssrgb\c100000\c100000\c100000\c0;\cssrgb\c100000\c15764\c0;
+\cssrgb\c100000\c25745\c7993;}
+\margl1440\margr1440\vieww26980\viewh16520\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf2 \CocoaLigature0 BLUE \'97 these are just headings and description
+\f1\b \ul \ulc2 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\b0 \cf3 \ulnone RED - these are commands that you\'92ll be typing out\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf4 YELLOW - These are expected outputs from the terminal.\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\b \cf2 \ul \
+LOGIN INTO THE mysql SERVER
+\f0\b0 \ulnone \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf5 $ \cf3 mysql\
+\cf5 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\b \cf2 \ul CHECK THE AVAILABLE LIST OF DATABASES\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\b0 \cf5 \ulnone mysql> \cf3 show databases;\cf5 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf4 +--------------------+\
+| Database           |\
++--------------------+\
+| information_schema |\
+| mysql              |\
+| performance_schema |\
+| sys                |\
+| wordpress          |\
++--------------------+\cf5 \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\b \ul CREATE A NEW DATABASE CALLED chatdb
+\f0\b0 \ulnone \
+mysql> create database chatdb;\
+Query OK, 1 row affected (0.01 sec)\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\b \cf2 \ul ACTIVATE THE chatdb DATABASE
+\f0\b0 \cf5 \ulnone \
+mysql> use chatdb;\
+\
+
+\f1\b \cf2 \ul CREATE A NEW TABLE WITHIN chatdb CALLED \'93chattable\'94
+\f0\b0 \ulnone \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf6 mysql> 
+\fs28 \cf7 create table chattable ( id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, socket_id VARCHAR(256) NOT NULL, username VARCHAR(256) NOT NULL, message TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP );
+\fs24 \cf4 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf3 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf8 Query OK, 0 rows affected, 1 warning (0.07 sec)\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf5 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\b \ul \ulc5 CREATE A NEW sql USER ACCOUNT CALLED \'91chatuser\'92 WITH THE PASSWORD \'91ch@tU53r_p@55w0rd' FOR THIS DATABASE AND TABLE
+\f0\b0 \ulnone \
+mysql> \cf3 CREATE USER 'chatuser'@'%' IDENTIFIED WITH mysql_native_password BY 'ch@tU53r_p@55w0rd';\
+\cf5 Query OK, 0 rows affected (0.01 sec)\
+\
+mysql> \cf3 GRANT ALL PRIVILEGES ON chatdb.* TO 'chatuser'@'%' WITH GRANT OPTION;\cf5 \
+Query OK, 0 rows affected (0.00 sec)\
+\
+mysql> \cf3 FLUSH PRIVILEGES;\
+\cf5 Query OK, 0 rows affected (0.00 sec)
+\f1\b \ul \
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf9 \ulc9 CREATE A .env FILE IN THE HOME FOLDER OF THE Node PRoject\
+
+\f0\b0 \cf3 \ulnone SECRET_SERVER_KEY=really-secret-key-here\
+DB_USER=chatuser\
+DB_PWD=ch@tU53r_p@55w0rd\
+DB_NAME=chatdb\
+DB_PORT=3306\
+DB_IP=localhost\
+TABLE_NAME=chattable\
+PORT=3000\
+\
+\
+\cf10 The DB_PORT is set to 3306 because that is the default port for MySQL. To confirm the correct PORT number \
+$\cf3 sudo mysql\
+\pard\pardeftab720\partightenfactor0
+
+\f2 \cf6 \cb11 \expnd0\expndtw0\kerning0
+mysql>\cf12 \cb13 SHOW GLOBAL VARIABLES LIKE 'PORT';\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0 \cf8 \cb1 \kerning1\expnd0\expndtw0 +---------------+-------+\
+| Variable_name | Value |\
++---------------+-------+\
+| port          | 3306  |\
++---------------+-------+\
+1 row in set (0.00 sec)\
+\
+\
+\
+\cf6 If you\'92re still debuggin some code then it would be a good idea to open up the port 3306 to all incoming traffic so that you can run your Node server from a remote location and test if it can do database queries.\cf8 \
+$ \cf14 sudo ufw allow 3306\
+\cf6 Then go to the digitalocean dashboard and open port 3306 for this server. \
+Then edit the mysql config file\
+$ \cf15 sudo nano /etc/mysql/mysql.conf.d/mysqld.conf\cf6 \
+Replace this line\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf3 bind-address            = 127.0.0.1\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf5 with this instead\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf14 bind-address            = *\
+\cf6 And now restart the mysql service\
+$ \cf14 sudo systemctl restart mysql.service\cf6 \
+IN THE .env FILE OF THE Node Project replace your DB_IP to be \
+DB_IP=132.144.42.64\
+Or whatever the IP address of the online mysql server is\
+\
+NEXT STEPS ENABLE HTTPS\
+\
+\
+.env should be modified to contain\
+SSL_PRIVATE_KEY\
+}

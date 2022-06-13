@@ -1,75 +1,100 @@
 var jwt = require('jsonwebtoken');
-const { secretServerKey } = require('./config');
 
-const decryptPayload = (token) => {
-    jwt.verify(token, secretServerKey, (err, decoded) => {
-        if (err) { return next(new Error(`Authentication Failed - ${err}`)); }
-        console.log("DECODED", decoded)
-    })
-}
-var sample_jwt_payload = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTQ4OTI4ODgsImV4cCI6MTY1NDg5NjQ4OCwiZW1haWwiOiJuYXZAcmFkaW93ZXN0ZXJuLmNhIiwiaWQiOjEsInNpdGUiOiJodHRwczpcL1wvZm05NDkuY2EiLCJ1c2VybmFtZSI6IndlYmFkbWluIiwibXl2YWx1ZSI6eyJyZXN0X3JvdXRlIjoiXC9zaW1wbGUtand0LWxvZ2luXC92MVwvYXV0aCIsInVzZXJuYW1lIjoid2ViYWRtaW4iLCJwYXNzd29yZCI6InczYkBkbTFuX3BANTV3MHJkIn19.J10M7eBgj5VwxHUudgUw_IMmrCxQqo1KMewZ63BXtfE"
-decryptPayload(sample_jwt_payload)
-
-
-const {wordpressBaseUrl,wordpressJwtLoginPath,deployEnvironment} = require('./config');
+const {wordpressBaseUrl,wordpressJwtLoginPath,wordpressJwtAuthKey,deployEnvironment} = require('./config');
 const express = require('express');
 const https = require('https');
 
 const loginRouter = express.Router();
-loginRouter.post('/', async (loginRequest,loginResponse)=>{
-    var loginBodyBuffer = [];
-    loginRequest.on("data", (d) => {loginBodyBuffer.push(d)})
-    var postData = {};
-    loginRequest.on("end", () => {
-        console.log("COLLECTED BODY")
+loginRouter.post('/', (nodeLoginRequest,nodeLoginResponse)=>{
+    
+    var nodeLoginBodyBuffer = [];
+    nodeLoginRequest.on("data", (d) => {nodeLoginBodyBuffer.push(d)})
+    
+    var postData = {'AUTH_KEY':wordpressJwtAuthKey};
+    
+    nodeLoginRequest.on("end", () => {
+        console.log("COLLECTED BODY");
         try {
-            var [usernameURI,passwordURI] = decodeURIComponent(loginBodyBuffer).split("&");
-            var username = usernameURI.split("=")[1]
-            var password = passwordURI.split("=")[1]
-            console.log(username,password)
-            var postData = {'username': username,'password': password};
-            var postOptions = {
-                hostname: wordpressBaseUrl,
-                port: 443,
-                path: wordpressJwtLoginPath,
-                method: 'POST',
-                headers:{"Content-Type":"application/json"},
-                //Must update fm949's SSL certificate to WebNames
-                rejectUnauthorized: (deployEnvironment === 'DEVELOPMENT') ? false : true,
-            };
-        
-            var jwtPayloadBuffer = []
-            var req = https.request(postOptions, (res) => {
-                console.log('statusCode:', res.statusCode);
-                console.log(Object.keys(res))
-                console.log('headers:', res.headers);
-
-                res.on('data', (d) => {
-                    // process.stdout.write(d);
-                    jwtPayloadBuffer.push(d.toString())
-                });
-                
-                res.on("end",() => {
-                    console.log("ENDED",jwtPayloadBuffer)
-                    loginResponse.send((jwtPayloadBuffer[0]));
-                })
+            var nodeLoginBody = decodeURIComponent(nodeLoginBodyBuffer).split("&");
+            console.log(nodeLoginBodyBuffer.toString());
+            nodeLoginBody.forEach(loginDetail => {
+                postData[loginDetail.split("=")[0]] = loginDetail.split("=")[1];
             });
-                
-            req.on('error', (e) => {
-                console.error("ERROR",e);
-                return;
-            });
-            req.write(JSON.stringify(postData));
-            // req.write(postData);
-            req.end();
-
         } 
         catch (error) {
-            throw new Error(error);
+            console.log('Unable to decodeURI');
+            console.log(error);
         }
+        var postOptions = {
+            hostname: wordpressBaseUrl,
+            port: 443,
+            path: wordpressJwtLoginPath,
+            method: 'POST',
+            headers:{"Content-Type":"application/json"},
+            //Must update fm949's SSL certificate to WebNames
+            rejectUnauthorized: (deployEnvironment === 'DEVELOPMENT') ? false : true,
+        };
+    
+        var jwtPayloadBuffer = [];
+        var wpLoginRequest = https.request(postOptions, (wpLoginResponse) => {
+
+            wpLoginResponse.on('data', (d) => {
+                // process.stdout.write(d);
+                jwtPayloadBuffer.push(d.toString())
+            });
+            
+            wpLoginResponse.on("end",async () => {
+
+                console.log("RECEIVED WORDPRESS RESPONSE TO AUTH ATTEMPT")
+                console.log(jwtPayloadBuffer)
+
+                try{
+                    jwtPayload = await JSON.parse(jwtPayloadBuffer);
+                }
+                catch(error){
+                    console.log("Unable to parse jwtPayloadBuffer")
+                    console.log(error)
+                    nodeLoginResponse.send({
+                        'success':"False",
+                        "wpStatusCode":wpLoginResponse.statusCode,
+                        "wpStatusMessage":wpLoginResponse.statusMessage,
+                    })
+                    return;
+                }
+                if(wpLoginResponse.statusCode !== 200){
+                    console.log("Wordpress Login Failed with ",wpLoginResponse.statusMessage)
+                    nodeLoginResponse.send({
+                        'success':"False",
+                        "wpStatusCode":wpLoginResponse.statusCode,
+                        "wpStatusMessage":wpLoginResponse.statusMessage,
+                        "wpPayloadMessage":jwtPayload.data.message
+                    })
+                    return;
+                }
+
+                if(jwtPayload.success==true && jwtPayload.data && jwtPayload.data.jwt){
+                    console.log(jwtPayload);
+                    d = await decryptPayload(jwtPayload.data.jwt);
+                    console.log(await d);
+                    nodeLoginResponse.send(jwtPayload.data);// Now send just the jwt 
+                    //console.log(jwtPayload.user_info)// For more important things you will also do an if-else check for the jwtPayload.user_info.roles before sendint the jwt over to the client
+                    return;
+                }
+                else{
+                    console.log("jwtPayload missing some properties",jwtPayload)
+                    nodeLoginResponse.send(jwtPayload);
+                    return;
+                }
+            })
+        });
+            
+        wpLoginRequest.on('error', (error) => {
+            console.error("wpLoinError",error);
+            throw new Error(`wpLoginRequest errored out with statusCode ${wpLoginResponse.statusCode} : ${error}`)
+        });
+        wpLoginRequest.write(JSON.stringify(postData));
+        wpLoginRequest.end();
     })
-
-
     
 })
     

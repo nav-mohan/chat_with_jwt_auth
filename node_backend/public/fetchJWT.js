@@ -1,11 +1,10 @@
-const SOCKET_URL = "http://localhost:3000";
-const JWT_URL    = "https://fm949.ca/wp-json/jwt-auth/v1/token";
+const {nodeBaseUrl,wordpressJwtLoginPath} = require('../src/config')
 
-let socketHandler = new SocketHandler(SOCKET_URL);
+let socketHandler = new SocketHandler(nodeBaseUrl);
 socketHandler.intializeNonAuthyConnection();
 
 const submitLogin = (username,password) => {
-    url = JWT_URL
+    url = wordpressJwtLoginPath
     loginData = new FormData()
     loginData.append('username',username)
     loginData.append('password',password)

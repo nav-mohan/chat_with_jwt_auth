@@ -9,9 +9,12 @@ const databasePassword          = process.env.DATABASE_PASSWORD;
 const databaseName              = process.env.DATABASE_NAME;
 const tableName                 = process.env.TABLE_NAME;
 const serverPort                = process.env.NODE_SERVER_PORT;
+const loginRouterPath           = process.env.NODE_LOGIN_ROUTER_PATH;
+const registerRouterPath        = process.env.NODE_REGISTER_ROUTER_PATH;
 const wordpressBaseUrl          = process.env.WORDPRESS_BASE_URL;
 const wordpressJwtLoginPath     = process.env.WORDPRESS_JWT_LOGIN_PATH;
 const wordpressJwtRegisterPath  = process.env.WORDPRESS_JWT_REGISTER_PATH;
+const wordpressJwtAuthKey       = process.env.WORDPRESS_JWT_AUTH_KEY;
 const authySocketPath           = process.env.NODE_AUTHENTICATED_SOCKET_PATH;
 const nonAuthySocketPath        = process.env.NODE_NON_AUTHENTICATED_SOCKET_PATH;
 const deployEnvironment         = process.env.DEPLOY_ENVIRONMENT;
@@ -60,6 +63,10 @@ if(!wordpressJwtRegisterPath){
     throw new Error(".env is missing WORDPRESS_JWT_REGISTER_PATH");
 }
 
+if(!wordpressJwtAuthKey){
+    throw new Error(".env is missing WORDPRESS_JWT_REGISTER_AUTH_KEY");
+}
+
 if(!authySocketPath){
     throw new Error(".env is missing NODE_AUTHENTICATED_SOCKET_PATH");
 }
@@ -84,9 +91,12 @@ module.exports = {
     databaseName,
     tableName,
     serverPort,
+    loginRouterPath,
+    registerRouterPath,
     wordpressBaseUrl,
     wordpressJwtLoginPath,
     wordpressJwtRegisterPath,
+    wordpressJwtAuthKey,
     authySocketPath,
     nonAuthySocketPath,
     deployEnvironment,

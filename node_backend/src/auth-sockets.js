@@ -4,7 +4,7 @@
  * ===============================================================
  */
 
-const { secretServerKey } = require('./config');
+const { secretServerKey,clientOrigins } = require('./config');
 
 /**
  * ===============================================================
